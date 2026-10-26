@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venezia da Veneziani - Mappa Mentale & Audio</title>
+    <style>
+        :root {
+            --primary: #8b0000;
+            --bg: #fdfbf7;
+            --card-bg: #ffffff;
+            --text: #2c2c2c;
+            --accent: #d4af37;
+            --success: #2e7d32;
+            --error: #c62828;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 2px solid var(--accent);
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .media-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .media-section img {
+            max-width: 100%;
+            max-height: 250px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid #e0e0e0;
+        }
+
+        .audio-card {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            background: #f9f5f0;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e2d9cc;
+            min-width: 280px;
+            text-align: center;
+        }
+
+        .audio-card audio {
+            width: 100%;
+            max-width: 320px;
+            margin-top: 8px;
+        }
+
+        .mindmap-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        details {
+            background: var(--card-bg);
+            border: 1px solid #e2d9cc;
+            border-radius: 10px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        details[open] {
+            border-left: 5px solid var(--primary);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        }
+
+        summary {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--primary);
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        summary::after {
+            content: "➕";
+            font-size: 0.9rem;
+        }
+
+        details[open] summary::after {
+            content: "➖";
+        }
+
+        .content-box {
+            margin-top: 15px;
+            border-top: 1px solid #f0e6d8;
+            padding-top: 10px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #f4ece1;
+            color: #5a3e1b;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        /* Quiz a fine pagina */
+        .quiz-container {
+            max-width: 750px;
+            margin: 50px auto 30px auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e2d9cc;
+        }
+
+        .quiz-container h2 {
+            color: var(--primary);
+            text-align: center;
+            margin-top: 0;
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 10px;
+        }
+
+        .question-card {
+            margin-bottom: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #faf7f2;
+            border: 1px solid #eee5d8;
+        }
+
+        .question-title {
+            font-size: 1.05rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-btn {
+            background: #ffffff;
+            border: 1px solid #ccc;
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .option-btn:hover {
+            background-color: #f0e6d8;
+            border-color: var(--accent);
+        }
+
+        .option-btn.selected {
+            background-color: #e0d6c8;
+            border-color: var(--primary);
+            font-weight: bold;
+        }
+
+        .option-btn.correct {
+            background-color: #e8f5e9 !important;
+            border-color: var(--success) !important;
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .option-btn.incorrect {
+            background-color: #ffebee !important;
+            border-color: var(--error) !important;
+            color: var(--error);
+        }
+
+        .explanation {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #555;
+            display: none;
+            padding: 8px;
+            border-left: 3px solid var(--accent);
+            background: #fff;
+        }
+
+        .quiz-actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn-submit {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.05rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background-color: #6a0000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        .result-box {
+            display: none;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f4ece1;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Venezia da Veneziani</h1>
+        <p>Mappa mentale estensibile dei 6 Sestieri e Guida Audio</p>
+    </header>
+
+    <!-- Sezione Media con Immagine e Lettore Audio per Venezia.m4a -->
+    <section class="media-section">
+        <img src="immagine_venezia.jpg" alt="Venezia tra bacari e sestieri">
+
+        <div class="audio-card">
+            <h3>🎧 Overview Audio</h3>
+            <audio controls>
+                <source src="Venezia.m4a" type="audio/mp4">
+                <source src="Venezia.m4a" type="audio/x-m4a">
+                Il tuo browser non supporta la riproduzione audio.
+            </audio>
+        </div>
+    </section>
+
+    <!-- Mappa Mentale Estensibile per Sestiere con Descrizioni -->
+    <main class="mindmap-container">
+
+        <!-- 1. Cannaregio -->
+        <details>
+            <summary>1. Cannaregio</summary>
+            <div class="content-box">
+                <p><strong>Caratteristica:</strong> Vivace, popolare e frequentato da residenti, perfetto per iniziare la giornata.</p>
+                <p>🏛️ <strong>Da vedere:</strong> Ghetto Ebraico, Chiesa della Madonna dell'Orto, Ca' d'Oro, Fondamenta dei Ormesini.</p>
+                <p>🍷 <strong>Bàcaro:</strong> Bacaro ae Bricoe (o Ca' d'Oro alla Vedova per le polpette).</p>
+                <p>🍽️ <strong>Ristorante:</strong> Osteria Anice Stellato.</p>
+                <span class="tag">Nord / Popolare</span>
+            </div>
+        </details>
+
+        <!-- 2. Castello -->
+        <details>
+            <summary>2. Castello</summary>
+            <div class="content-box">
+                <p><strong>Caratteristica:</strong> Il sestiere più esteso della città, dove si respira aria verace.</p>
+                <p>🏛️ <strong>Da vedere:</strong> Arsenale di Venezia, Basilica dei Santi Giovanni e Paolo, Giardini della Biennale.</p>
+                <p>🍷 <strong>Bàcaro:</strong> Bacaro Risorto (Campo S. Provolo).</p>
+                <p>🍽️ <strong>Ristorante:</strong> Trattoria Corte Sconta.</p>
+                <span class="tag">Est / Biennale</span>
+            </div>
+        </details>
+
+        <!-- 3. San Marco -->
+        <details>
+            <summary>3. San Marco</summary>
+            <div class="content-box">
+                <p><strong>Caratteristica:</strong> Il centro monumentale, sfarzoso ed elegante della Serenissima.</p>
+                <p>🏛️ <strong>Da vedere:</strong> Piazza San Marco, Basilica, Palazzo Ducale, Campanile, Ponte dei Sospiri.</p>
+                <p>🍷 <strong>Bàcaro:</strong> I Rusteghi (Corte del Leon Bianco).</p>
+                <p>🍽️ <strong>Ristorante:</strong> Trattoria Da Fiore.</p>
+                <span class="tag">Centro / Monumentale</span>
+            </div>
+        </details>
+
+        <!-- 4. San Polo -->
+        <details>
+            <summary>4. San Polo</summary>
+            <div class="content-box">
+                <p><strong>Caratteristica:</strong> Il centro commerciale più antico, piccolo ma densissimo di storia.</p>
+                <p>🏛️ <strong>Da vedere:</strong> Ponte di Rialto, Mercato di Rialto, Chiesa dei Frari.</p>
+                <p>🍷 <strong>Bàcaro:</strong> Cantina do Mori (il bàcaro più antico di Venezia, dal 1462).</p>
+                <p>🍽️ <strong>Ristorante:</strong> Antiche Carampane.</p>
+                <span class="tag">Rialto / Storico</span>
+            </div>
+        </details>
+
+        <!-- 5. Santa Croce -->
+        <details>
+            <summary>5. Santa Croce</summary>
+            <div class="content-box">
+                <p><strong>Caratteristica:</strong> L'ingresso della Laguna con angoli medievali di rara bellezza.</p>
+                <p>🏛️ <strong>Da vedere:</strong> Campo San Giacomo dell'Orio, Fontego dei Turchi, Ca' Pesaro.</p>
+                <p>🍷 <strong>Bàcaro:</strong> Bacarotto (o Bacareto da Lele per i mini panini).</p>
+                <p>🍽️ <strong>Ristorante:</strong> Osteria La Zucca.</p>
+                <span class="tag">Ovest / Tranquillo</span>
+            </div>
+        </details>
+
+        <!-- 6. Dorsoduro -->
+        <details>
+            <summary>6. Dorsoduro</summary>
+            <div class="content-box">
+                <p><strong>Caratteristica:</strong> Quartiere universitario e artistico adagiato sul canale della Giudecca.</p>
+                <p>🏛️ <strong>Da vedere:</strong> Gallerie dell'Accademia, Peggy Guggenheim, Basilica della Salute, Zattere, Squero di San Trovaso.</p>
+                <p>🍷 <strong>Bàcaro:</strong> Osteria Al Squero.</p>
+                <p>🍽️ <strong>Ristorante:</strong> Ai Mercanti (o Bakarò).</p>
+                <span class="tag">Sud / Università</span>
+            </div>
+        </details>
+
+    </main>
+
+    <!-- Quiz a fine pagina -->
+    <section class="quiz-container">
+        <h2>🍷 Quiz sulla Cucina Veneziana</h2>
+        <p style="text-align:center; color: #666; margin-bottom: 25px;">Metti alla prova le tue conoscenze sui bàcari e piatti tipici dei sestieri!</p>
+
+        <!-- Domanda 1 -->
+        <div class="question-card" id="q1">
+            <div class="question-title">1. Qual è il bàcaro più antico di Venezia (attivo dal 1462), situato a San Polo e famoso per i suoi "francobolli"?</div>
+            <div class="options">
+                <button type="button" class="option-btn" onclick="selectOption(1, 'A', this)">A) Bacaro ae Bricoe</button>
+                <button type="button" class="option-btn" onclick="selectOption(1, 'B', this)">B) Cantina do Mori</button>
+                <button type="button" class="option-btn" onclick="selectOption(1, 'C', this)">C) Bacaro Risorto</button>
+                <button type="button" class="option-btn" onclick="selectOption(1, 'D', this)">D) Bacareto da Lele</button>
+            </div>
+            <div class="explanation" id="exp1">💡 <strong>Risposta corretta: B!</strong> La Cantina do Mori a San Polo è documentata dal 1462 ed è il bàcaro più antico della città[cite: 7, 8].</div>
+        </div>
+
+        <!-- Domanda 2 -->
+        <div class="question-card" id="q2">
+            <div class="question-title">2. In quale sestiere si trova la leggendaria "Ca' d'Oro alla Vedova", celebre per le sue polpette di carne calde?</div>
+            <div class="options">
+                <button type="button" class="option-btn" onclick="selectOption(2, 'A', this)">A) Cannaregio</button>
+                <button type="button" class="option-btn" onclick="selectOption(2, 'B', this)">B) Castello</button>
+                <button type="button" class="option-btn" onclick="selectOption(2, 'C', this)">C) Dorsoduro</button>
+                <button type="button" class="option-btn" onclick="selectOption(2, 'D', this)">D) San Marco</button>
+            </div>
+            <div class="explanation" id="exp2">💡 <strong>Risposta corretta: A!</strong> Ca' d'Oro alla Vedova si trova a Cannaregio, perfetto per gustare le sue rinomate polpette[cite: 7, 8].</div>
+        </div>
+
+        <!-- Domanda 3 -->
+        <div class="question-card" id="q3">
+            <div class="question-title">3. Quale ristorante di Santa Croce è celebre per lo sformato di zucca con ricotta affumicata e la cucina vegetariana creativa?</div>
+            <div class="options">
+                <button type="button" class="option-btn" onclick="selectOption(3, 'A', this)">A) Trattoria Corte Sconta</button>
+                <button type="button" class="option-btn" onclick="selectOption(3, 'B', this)">B) Antiche Carampane</button>
+                <button type="button" class="option-btn" onclick="selectOption(3, 'C', this)">C) Osteria La Zucca</button>
+                <button type="button" class="option-btn" onclick="selectOption(3, 'D', this)">D) Osteria Anice Stellato</button>
+            </div>
+            <div class="explanation" id="exp3">💡 <strong>Risposta corretta: C!</strong> L'Osteria La Zucca a Santa Croce è famosa proprio per lo sformato di zucca e la sua svolta creativa[cite: 7, 8].</div>
+        </div>
+
+        <div class="quiz-actions">
+            <button type="button" class="btn-submit" onclick="checkQuiz()">Verifica Risposte</button>
+        </div>
+
+        <div class="result-box" id="resultBox"></div>
+    </section>
+
+    <!-- Script Quiz -->
+    <script>
+        const correctAnswers = { 1: 'B', 2: 'A', 3: 'C' };
+        const userSelections = {};
+
+        function selectOption(qNum, option, clickedBtn) {
+            userSelections[qNum] = option;
+            const card = document.getElementById('q' + qNum);
+            const buttons = card.querySelectorAll('.option-btn');
+            
+            buttons.forEach(btn => {
+                btn.classList.remove('selected');
+            });
+
+            clickedBtn.classList.add('selected');
+        }
+
+        function checkQuiz() {
+            let score = 0;
+            const total = 3;
+
+            for (let i = 1; i <= total; i++) {
+                const card = document.getElementById('q' + i);
+                const buttons = card.querySelectorAll('.option-btn');
+                const exp = document.getElementById('exp' + i);
+                const userAns = userSelections[i];
+                const correctAns = correctAnswers[i];
+
+                exp.style.display = 'block';
+
+                buttons.forEach(btn => {
+                    const btnOption = btn.innerText.trim().charAt(0);
+                    btn.disabled = true;
+
+                    if (btnOption === correctAns) {
+                        btn.classList.add('correct');
+                    } else if (btnOption === userAns && userAns !== correctAns) {
+                        btn.classList.add('incorrect');
+                    }
+                });
+
+                if (userAns === correctAns) {
+                    score++;
+                }
+            }
+
+            const resultBox = document.getElementById('resultBox');
+            resultBox.style.display = 'block';
+            resultBox.innerText = `Hai totalizzato ${score} su ${total} risposte corrette! 🎉`;
+            resultBox.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+
+</body>
+</html>
